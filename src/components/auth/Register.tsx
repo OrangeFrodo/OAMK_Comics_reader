@@ -6,9 +6,12 @@ import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 
 export default class Register extends Component {
+    
+    // Constructor
     constructor(props) {
         super(props)
 
+        // Atributes
         this.state = {
             email: "",
             name: "",
@@ -18,12 +21,14 @@ export default class Register extends Component {
         this.registerFun = this.registerFun.bind(this)
     }
 
+    // Register method
     registerFun() {
         const { name, email, password } = this.state
 
         // Auth
         auth().createUserWithEmailAndPassword(email, password)
             .then((result) => {
+                // Save to collection firestore
                 firestore()
                     .collection("users")
                     .doc(auth().currentUser.uid)
@@ -38,7 +43,7 @@ export default class Register extends Component {
             })
     }
 
-
+    // Render method
     render() {
         return (
             <View>
