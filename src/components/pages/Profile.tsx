@@ -1,12 +1,24 @@
-import React from 'react'
-import { View, Text} from 'react-native'
+import React, { Component } from 'react';
+import { View } from 'react-native';
 
-export default function Profile() {
-    return (
-        <View>
-            <Text>
-                Hey this is profile
-            </Text>
-        </View>
-    )
+
+
+export class Profile extends Component {
+    /*
+    constructor(props) {
+        super(props) {
+            //
+        }
+    }
+    */
+
+    render() {
+        return (
+            <View>
+                
+            </View>
+        );
+    }
 }
+
+export default Profile;

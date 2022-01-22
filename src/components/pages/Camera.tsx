@@ -1,25 +1,22 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import Comic from '../Comic';
 
 
 
-export class Home extends Component {
-    /*
+export class Camera extends Component {
     constructor(props) {
         super(props) {
             //
         }
     }
-    */
 
     render() {
         return (
             <View>
-                <Comic />
+
             </View>
         );
     }
 }
 
-export default Home;
+export default Camera;

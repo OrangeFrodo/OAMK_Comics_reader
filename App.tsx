@@ -16,9 +16,13 @@ import Register from './src/components/auth/Register';
 
 // Navigation
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 
-const Stack = createNativeStackNavigator();
+
+// Atributes
+//const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 // Firabase
 import auth from '@react-native-firebase/auth';
@@ -56,11 +60,11 @@ export class App extends Component {
     if (!active) {
       return (
         <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name="Landing" component={Landing} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
-          </Stack.Navigator>
+          <Tab.Navigator>
+            <Tab.Screen name="Landing" component={Landing} />
+            <Tab.Screen name="Login" component={Login} />
+            <Tab.Screen name="Register" component={Register} />
+          </Tab.Navigator>
         </NavigationContainer>
       )
     }
@@ -68,10 +72,10 @@ export class App extends Component {
     else {
       return (
         <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Profile" component={Profile} />
-          </Stack.Navigator>
+          <Tab.Navigator>
+            <Tab.Screen name="Home" component={Home} />
+            <Tab.Screen name="Profile" component={Profile} />
+          </Tab.Navigator>
         </NavigationContainer>
       )
     }
