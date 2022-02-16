@@ -21,7 +21,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 
 // Atributes
-//const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 // Firabase
@@ -60,11 +60,11 @@ export class App extends Component {
     if (!active) {
       return (
         <NavigationContainer>
-          <Tab.Navigator>
-            <Tab.Screen name="Landing" component={Landing} />
-            <Tab.Screen name="Login" component={Login} />
-            <Tab.Screen name="Register" component={Register} />
-          </Tab.Navigator>
+          <Stack.Navigator>
+            <Stack.Screen name="Landing" component={Landing} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
+          </Stack.Navigator>
         </NavigationContainer>
       )
     }
