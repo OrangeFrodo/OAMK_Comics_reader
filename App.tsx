@@ -7,12 +7,13 @@ import {
   View,
 } from 'react-native';
 
-// Windows
-import Home from './src/components/pages/Home';
+// Components / Page
 import Profile from './src/components/pages/Profile'
 import Landing from './src/components/auth/Landing';
 import Login from './src/components/auth/Login';
 import Register from './src/components/auth/Register';
+import ComicDetail from './src/components/ComicDetail';
+import Comics from './src/components/Comics';
 
 // Navigation
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -53,9 +54,19 @@ export class App extends Component {
     })
   }
 
+
   // Render method
   render() {
     const { active } = this.state
+
+    // Send multiple componnents as children for one tab
+    const createHomeStack = () =>
+      <Stack.Navigator>
+        <Stack.Screen name="Comics" component={Comics} />
+        <Stack.Screen name="ComicsDetail" component={ComicDetail} />
+      </Stack.Navigator>
+
+
 
     if (!active) {
       return (
@@ -72,8 +83,8 @@ export class App extends Component {
     else {
       return (
         <NavigationContainer>
-          <Tab.Navigator>
-            <Tab.Screen name="Home" component={Home} />
+          <Tab.Navigator screenOptions={{ headerShown: false }}>
+            <Tab.Screen name="Home" children={createHomeStack} />
             <Tab.Screen name="Profile" component={Profile} />
           </Tab.Navigator>
         </NavigationContainer>

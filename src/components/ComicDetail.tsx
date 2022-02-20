@@ -2,12 +2,10 @@ import React, { Component, Props, useState } from 'react';
 import { Image, StyleSheet, Text, View, TouchableOpacity, Modal, Alert, Pressable } from 'react-native';
 
 // Firebase
-import { utils } from '@react-native-firebase/app';
 import storage, { firebase } from '@react-native-firebase/storage';
-import ComicModal from './ComicModal';
 
 
-export class Comic extends Component {
+export class ComicDetail extends Component {
     // Constructor
     constructor(props: string) {
         super(props)
@@ -15,7 +13,8 @@ export class Comic extends Component {
         this.state = {
             imageUrl: null,                 // Image url in menu
             imageDetailUrls: [],            // Array of pictures
-            currentImagelUrl: null,         // Url in modal
+            numberOfImagesInDetailUrls: 1000,   // Number of images In detail urls
+            currentImagelUrl: null,             // Url in modal
             modalVisible: false,
             wasLoaded: false,               // Set 1. load
             numberOfPage: 0,    // Which page comics is on
@@ -53,6 +52,7 @@ export class Comic extends Component {
             this.setState({
                 numberOfPage: this.state.numberOfPage + 1
             }, () => {
+
                 this.setCurrentUrlPage(this.state.numberOfPage)
             })
 
@@ -65,7 +65,7 @@ export class Comic extends Component {
         const { imageDetailUrls } = this.state
 
         // Got here
-        console.log("GOOT HERE")
+        // console.log("GOOT HERE")
 
         imageDetailUrls.forEach((item, index) => {
 
@@ -88,6 +88,14 @@ export class Comic extends Component {
     setModalVisible = async (visible: boolean) => {
         // Load states
         const { imageDetailUrls, currentImagelUrl, wasLoaded } = this.state
+        let done = false;
+
+        // Comics vars
+        const episodes = this.props.route.params.episodes;
+
+        episodes.map((item) => {
+            console.log(item)
+        })
 
         // Set state for modal
         this.setState({
@@ -96,7 +104,7 @@ export class Comic extends Component {
 
         if (!wasLoaded) {
             // This is hand made function, I was to lazy to rewrite names of JPG files in firebase storage.
-            for (let index = 1; index < 26; index++) {
+            for (let index = 1; !done; index++) {
                 let image_url
 
                 if (index < 10) {
@@ -116,15 +124,18 @@ export class Comic extends Component {
                         imageDetailUrls.push(response)
                     })
                     .catch((error) => {
+                        if (error) {
+                            done = true
+                            this.setState({
+                                wasLoaded: true,
+                                numberOfImagesInDetailUrls: index - 1
+                            })
+                        }
                         console.log("ERROR")
                         console.log(error)
                     })
 
             }
-
-            this.setState({
-                wasLoaded: true
-            })
 
             // Got here
             // console.log(imageDetailUrls)
@@ -133,24 +144,70 @@ export class Comic extends Component {
 
 
     async componentDidMount() {
-        // Load image URL
-        let image_url = storage().refFromURL('gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 1/01.jpg')
 
+        // Comics vars
+        const episodes = this.props.route.params.episodes;
 
-        // Get image URL
-        await image_url.getDownloadURL()
-            .then((response) => {
-                this.setState({ imageUrl: response, currentImagelUrl: response })
-            })
-            .catch((error) => {
-                console.log("ERROR")
-                console.log(error)
-            })
+        episodes.map(() => {
+            // Load image URL
+            let image_url = storage().refFromURL('gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 1/01.jpg')
+
+            // Get image URL
+            await image_url.getDownloadURL()
+                .then((response) => {
+                    
+                    this.setState({ imageUrl: response, currentImagelUrl: response })
+                })
+                .catch((error) => {
+                    console.log("ERROR")
+                    console.log(error)
+                })
+        })
     }
 
 
     render() {
-        const { imageUrl, modalVisible, currentImagelUrl } = this.state
+        const { imageUrl, modalVisible, currentImagelUrl, numberOfImagesInDetailUrls, numberOfPage } = this.state
+
+        // Comics vars
+        const itemId = this.props.route.params.itemId;
+
+        // Right && Left arrow for modal
+        let rightArrow
+        let leftArrow
+
+        // Right arrow render
+        if ((numberOfImagesInDetailUrls - 1) > numberOfPage) {
+            rightArrow = (
+                <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => {
+                        // Implement dissapear after reading it
+                        this.setPageNum(true)
+                    }}
+                >
+                    <Text style={styles.textStyle}>Next Modal</Text>
+                </Pressable>
+            )
+        } else {
+            rightArrow = <></>
+        }
+
+        // Left arrow render
+        if (0 < numberOfPage) {
+            leftArrow = (
+                <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => {
+                        this.setPageNum(false)
+                    }}
+                >
+                    <Text style={styles.textStyle}>Previous Modal</Text>
+                </Pressable >
+            )
+        } else {
+            leftArrow = <></>
+        }
 
         return (
             <View>
@@ -179,24 +236,10 @@ export class Comic extends Component {
                             </Pressable>
 
                             {/*Next modal */}
-                            <Pressable
-                                style={[styles.button, styles.buttonClose]}
-                                onPress={() => {
-                                    this.setPageNum(true)
-                                }}
-                            >
-                                <Text style={styles.textStyle}>Next Modal</Text>
-                            </Pressable>
+                            {rightArrow}
 
                             {/*Previous modal */}
-                            <Pressable
-                                style={[styles.button, styles.buttonClose]}
-                                onPress={() => {
-                                    this.setPageNum(false)
-                                }}
-                            >
-                                <Text style={styles.textStyle}>Previous Modal</Text>
-                            </Pressable>
+                            {leftArrow}
                         </View>
                     </View>
                 </Modal>
@@ -206,6 +249,7 @@ export class Comic extends Component {
                     onPress={() => this.setModalVisible(true)}
                 >
                     <Text>The Walking Dead</Text>
+                    <Text>itemId: {JSON.stringify(itemId)}</Text>
                     <Image style={styles.headline} source={{ uri: imageUrl }} />
                 </TouchableOpacity>
             </View>
@@ -213,7 +257,7 @@ export class Comic extends Component {
     }
 }
 
-export default Comic;
+export default ComicDetail;
 
 const styles = StyleSheet.create({
     headline: {

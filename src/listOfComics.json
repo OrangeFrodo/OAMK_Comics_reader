@@ -1,0 +1,36 @@
+{
+  "Comics": [
+    {
+      "id": 0,
+      "title": "The Walking Dead",
+      "dicUrl": "gs://voidalpha-d42d3.appspot.com/The Walking Dead",
+      "episodes": [
+        {
+          "id": 0,
+          "episodeUrl": "gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 1",
+          "zeroPageUrl": "gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 1/0",
+          "firstPageUrl": "gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 1/01.jpg"
+        },
+        {
+          "id": 1,
+          "episodeUrl": "gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 2",
+          "zeroPageUrl": "gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 2/0",
+          "firstPageUrl": "gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 2/01.jpg"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Mass Effect: Evolution",
+      "dicUrl": "gs://voidalpha-d42d3.appspot.com/Mass Effect: Evolution",
+      "episodes": [
+        {
+          "id": 0,
+          "episodeUrl": "gs://voidalpha-d42d3.appspot.com/Mass Effect: Evolution/Episode 1",
+          "zeroPageUrl": "gs://voidalpha-d42d3.appspot.com/Mass Effect: Evolution/Episode 1/0",
+          "firstPageUrl": "gs://voidalpha-d42d3.appspot.com/Mass Effect: Evolution/Episode 1/01.jpg"
+        }
+      ]
+    }
+  ]
+}

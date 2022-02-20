@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import Comic from '../Comic';
-import ComicModal from '../ComicModal';
+import Comics from '../Comics';
 
 
 
@@ -17,7 +16,7 @@ export class Home extends Component {
     render() {
         return (
             <View>
-                <Comic />
+                <Comics />
             </View>
         );
     }
