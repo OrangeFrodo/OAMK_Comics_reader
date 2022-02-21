@@ -11,6 +11,7 @@ export class ComicDetail extends Component {
         super(props)
 
         this.state = {
+            DIRLocationsOfEveryPage: [],    // 
             imageUrl: null,                 // Image url in menu
             imageDetailUrls: [],            // Array of pictures
             numberOfImagesInDetailUrls: 1000,   // Number of images In detail urls
@@ -23,6 +24,7 @@ export class ComicDetail extends Component {
         // Binding methotds
         this.setModalVisible = this.setModalVisible.bind(this)
         this.setActualUrl = this.setActualUrl.bind(this)
+        this.cleanData = this.cleanData.bind(this)
     }
 
     // ActualUrl for 1. loaded pic
@@ -84,79 +86,102 @@ export class ComicDetail extends Component {
         // console.log("Left here setCurrentUrlPage()")
     }
 
+    cleanData = () => {
+        this.setState({
+            imageDetailUrls: [],
+            numberOfPage: 0
+        }, () => {
+            console.log("Deleted all urls // CleanData()")
+            console.log(this.state.imageDetailUrls)
+        })
+    }
 
-    setModalVisible = async (visible: boolean) => {
+    setModalVisible = (visible: boolean) => {
+        // Set state for modal
+        this.setState({
+            modalVisible: visible
+        })
+    }
+
+    loadPagesForComics = async (urlCompare) => {
+
         // Load states
-        const { imageDetailUrls, currentImagelUrl, wasLoaded } = this.state
+        const { imageDetailUrls, currentImagelUrl } = this.state
         let done = false;
 
         // Comics vars
         const episodes = this.props.route.params.episodes;
 
-        episodes.map((item) => {
-            console.log(item)
-        })
+        // console.log(urlCompare + " URL compare () 1")
+        // console.log(urlCompare + " ID_Clicked compare () 1")
 
-        // Set state for modal
-        this.setState({
-            modalVisible: visible
-        })
+        episodes.map(async (item) => {
+            // console.log(item.id + " ID compare () 2")
 
-        if (!wasLoaded) {
-            // This is hand made function, I was to lazy to rewrite names of JPG files in firebase storage.
-            for (let index = 1; !done; index++) {
-                let image_url
+            if (urlCompare == item.id) {
+                for (let index = 1; !done; index++) {
+                    let image_url
 
-                if (index < 10) {
-                    image_url = storage().refFromURL("gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 1/0" + index + ".jpg")
+                    if (index < 10) {
+                        // to setup initial url
+                        image_url = storage().refFromURL(item.episodeUrl + "/0" + index + ".jpg")
 
-                    // Set 1. picture of comics
-                    if (index == 1) {
-                        this.setActualUrl(currentImagelUrl)
-                    }
-                } else {
-                    image_url = storage().refFromURL("gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 1/" + index + ".jpg")
-                }
-
-
-                await image_url.getDownloadURL()
-                    .then((response) => {
-                        imageDetailUrls.push(response)
-                    })
-                    .catch((error) => {
-                        if (error) {
-                            done = true
-                            this.setState({
-                                wasLoaded: true,
-                                numberOfImagesInDetailUrls: index - 1
-                            })
+                        // console.log(image_url + " // loadPagesForComics ()")
+                        // Set 1. picture of comics
+                        if (index == 1) {
+                            this.setActualUrl(currentImagelUrl)
                         }
-                        console.log("ERROR")
-                        console.log(error)
-                    })
+                    } else {
+                        image_url = storage().refFromURL(item.episodeUrl + "/" + index + ".jpg")
+                    }
 
+
+
+                    await image_url.getDownloadURL()
+                        .then((response) => {
+                            imageDetailUrls.push(response)
+                        })
+                        .catch((error) => {
+                            if (error) {
+                                done = true
+                                this.setState({
+                                    wasLoaded: true,
+                                    numberOfImagesInDetailUrls: index - 1
+                                })
+                            }
+                            console.log("ERROR")
+                            console.log(error)
+                        })
+                }
             }
 
-            // Got here
-            // console.log(imageDetailUrls)
-        }
+        })
+
+
+        console.log(urlCompare + "In load pages for comics")
+
+        // Got here
+        // console.log(imageDetailUrls)
     }
 
 
     async componentDidMount() {
+        const { DIRLocationsOfEveryPage } = this.state
 
         // Comics vars
         const episodes = this.props.route.params.episodes;
 
-        episodes.map(() => {
+        episodes.map(async (item, index) => {
             // Load image URL
-            let image_url = storage().refFromURL('gs://voidalpha-d42d3.appspot.com/The Walking Dead/Episode 1/01.jpg')
+            let image_url = storage().refFromURL(item.firstPageUrl)
 
             // Get image URL
             await image_url.getDownloadURL()
                 .then((response) => {
-                    
-                    this.setState({ imageUrl: response, currentImagelUrl: response })
+                    DIRLocationsOfEveryPage.push(response)
+                    // Index
+                    console.log(index)
+                    this.setState({ currentImagelUrl: response })
                 })
                 .catch((error) => {
                     console.log("ERROR")
@@ -167,7 +192,7 @@ export class ComicDetail extends Component {
 
 
     render() {
-        const { imageUrl, modalVisible, currentImagelUrl, numberOfImagesInDetailUrls, numberOfPage } = this.state
+        const { DIRLocationsOfEveryPage, modalVisible, currentImagelUrl, numberOfImagesInDetailUrls, numberOfPage } = this.state
 
         // Comics vars
         const itemId = this.props.route.params.itemId;
@@ -175,6 +200,25 @@ export class ComicDetail extends Component {
         // Right && Left arrow for modal
         let rightArrow
         let leftArrow
+        let newArray = []
+
+        // New array of new pages for new picture
+        newArray = DIRLocationsOfEveryPage.map((item, index) => {
+            return (
+                <TouchableOpacity
+                    style={styles.headline}
+                    // onPress={this.pressed}
+                    onPress={() => {
+                        this.loadPagesForComics(index)
+                        this.setModalVisible(true)
+                    }}>
+                    <Text>The Walking Dead</Text>
+                    <Text>itemId: {JSON.stringify(itemId)}</Text>
+                    <Text>This is text</Text>
+                    <Image style={styles.headline} source={{ uri: item }} />
+                </TouchableOpacity >
+            )
+        })
 
         // Right arrow render
         if ((numberOfImagesInDetailUrls - 1) > numberOfPage) {
@@ -217,6 +261,7 @@ export class ComicDetail extends Component {
                     visible={modalVisible}
                     onRequestClose={() => {
                         Alert.alert("Modal has been closed.");
+                        this.cleanData()
                         this.setModalVisible(!modalVisible);
                     }}
                 >
@@ -230,6 +275,7 @@ export class ComicDetail extends Component {
                                 style={[styles.button, styles.buttonClose]}
                                 onPress={() => {
                                     this.setModalVisible(!modalVisible)
+                                    this.cleanData()
                                 }}
                             >
                                 <Text style={styles.textStyle}>Hide Modal</Text>
@@ -243,15 +289,7 @@ export class ComicDetail extends Component {
                         </View>
                     </View>
                 </Modal>
-                <TouchableOpacity
-                    style={styles.headline}
-                    // onPress={this.pressed}
-                    onPress={() => this.setModalVisible(true)}
-                >
-                    <Text>The Walking Dead</Text>
-                    <Text>itemId: {JSON.stringify(itemId)}</Text>
-                    <Image style={styles.headline} source={{ uri: imageUrl }} />
-                </TouchableOpacity>
+                {newArray}
             </View>
         );
     }
