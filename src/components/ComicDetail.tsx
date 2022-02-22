@@ -90,9 +90,10 @@ export class ComicDetail extends Component {
         this.setState({
             imageDetailUrls: [],
             numberOfPage: 0
-        }, () => {
-            console.log("Deleted all urls // CleanData()")
-            console.log(this.state.imageDetailUrls)
+        }, async () => {
+            // console.log("Deleted all urls // CleanData()")
+            // console.log(this.state.imageDetailUrls)
+            this.setCurrentUrlPage(this.state.numberOfPage)
         })
     }
 
@@ -100,10 +101,12 @@ export class ComicDetail extends Component {
         // Set state for modal
         this.setState({
             modalVisible: visible
+        }, () => {
+            this.setCurrentUrlPage(0)
         })
     }
 
-    loadPagesForComics = async (urlCompare) => {
+    loadPagesForComics = (urlCompare) => {
 
         // Load states
         const { imageDetailUrls, currentImagelUrl } = this.state
@@ -165,8 +168,8 @@ export class ComicDetail extends Component {
     }
 
 
-    async componentDidMount() {
-        const { DIRLocationsOfEveryPage } = this.state
+    componentDidMount() {
+        const { DIRLocationsOfEveryPage, currentImagelUrl } = this.state
 
         // Comics vars
         const episodes = this.props.route.params.episodes;
@@ -181,7 +184,10 @@ export class ComicDetail extends Component {
                     DIRLocationsOfEveryPage.push(response)
                     // Index
                     console.log(index)
-                    this.setState({ currentImagelUrl: response })
+                    this.setState({ currentImagelUrl: response }, () => (console.log("A")))
+                    if (index == 1) {
+                        this.setActualUrl(currentImagelUrl)
+                    }
                 })
                 .catch((error) => {
                     console.log("ERROR")
@@ -210,6 +216,7 @@ export class ComicDetail extends Component {
                     // onPress={this.pressed}
                     onPress={() => {
                         this.loadPagesForComics(index)
+                        this.setActualUrl(item)
                         this.setModalVisible(true)
                     }}>
                     <Text>The Walking Dead</Text>
