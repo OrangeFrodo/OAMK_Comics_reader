@@ -1,5 +1,5 @@
-import React, { Component, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, TouchableHighlightBase, ActivityIndicator, FlatList } from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, Pressable, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
 
 // Data
 import jsonData from '../listOfComics.json'
@@ -60,12 +60,12 @@ export class Comics extends Component {
 
     render() {
         const { isLoading, data } = this.state;
-        const initialProgram = []
+        const initialProgram: readonly any[] | null | undefined = []
 
         const random = Math.floor(Math.random() * 100);
 
         // Datas
-        data.map((element, id) => {
+        data.map((element: any, id : number) => {
             if(id == random) {
                 initialProgram.push(element)
             }

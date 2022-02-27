@@ -1,5 +1,5 @@
 import React, { Component, Props, useState } from 'react';
-import { Image, StyleSheet, Text, View, TouchableOpacity, Modal, Alert, Pressable } from 'react-native';
+import { Image, StyleSheet, Text, View, TouchableOpacity, Modal, Alert, Pressable, ActivityIndicator } from 'react-native';
 
 // Firebase
 import storage, { firebase } from '@react-native-firebase/storage';
@@ -19,6 +19,7 @@ export class ComicDetail extends Component {
             modalVisible: false,
             wasLoaded: false,               // Set 1. load
             numberOfPage: 0,    // Which page comics is on
+            isLoading: true
         }
 
         // Binding methotds
@@ -194,11 +195,15 @@ export class ComicDetail extends Component {
                     console.log(error)
                 })
         })
+
+        {
+            this.setState({ isLoading: false });
+        }
     }
 
 
     render() {
-        const { DIRLocationsOfEveryPage, modalVisible, currentImagelUrl, numberOfImagesInDetailUrls, numberOfPage } = this.state
+        const { DIRLocationsOfEveryPage, modalVisible, currentImagelUrl, numberOfImagesInDetailUrls, numberOfPage, isLoading } = this.state
 
         // Comics vars
         const itemId = this.props.route.params.itemId;
@@ -262,41 +267,45 @@ export class ComicDetail extends Component {
 
         return (
             <View>
-                <Modal
-                    animationType="fade"
-                    transparent={false}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                        Alert.alert("Modal has been closed.");
-                        this.cleanData()
-                        this.setModalVisible(!modalVisible);
-                    }}
-                >
-                    {/* Views for modal */}
-                    <View style={styles.centeredView}>
-                        <View /*style={styles.modalView} */>
-                            <Image style={styles.headline} source={{ uri: currentImagelUrl }} />
+                {isLoading ? <ActivityIndicator /> : (
+                    <View>
+                        <Modal
+                            animationType="fade"
+                            transparent={false}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                Alert.alert("Modal has been closed.");
+                                this.cleanData()
+                                this.setModalVisible(!modalVisible);
+                            }}
+                        >
+                            {/* Views for modal */}
+                            <View style={styles.centeredView}>
+                                <View /*style={styles.modalView} */>
+                                    <Image style={styles.headline} source={{ uri: currentImagelUrl }} />
 
-                            {/*Close modal */}
-                            <Pressable
-                                style={[styles.button, styles.buttonClose]}
-                                onPress={() => {
-                                    this.setModalVisible(!modalVisible)
-                                    this.cleanData()
-                                }}
-                            >
-                                <Text style={styles.textStyle}>Hide Modal</Text>
-                            </Pressable>
+                                    {/*Close modal */}
+                                    <Pressable
+                                        style={[styles.button, styles.buttonClose]}
+                                        onPress={() => {
+                                            this.setModalVisible(!modalVisible)
+                                            this.cleanData()
+                                        }}
+                                    >
+                                        <Text style={styles.textStyle}>Hide Modal</Text>
+                                    </Pressable>
 
-                            {/*Next modal */}
-                            {rightArrow}
+                                    {/*Next modal */}
+                                    {rightArrow}
 
-                            {/*Previous modal */}
-                            {leftArrow}
-                        </View>
+                                    {/*Previous modal */}
+                                    {leftArrow}
+                                </View>
+                            </View>
+                        </Modal>
+                        {newArray}
                     </View>
-                </Modal>
-                {newArray}
+                )}
             </View>
         );
     }

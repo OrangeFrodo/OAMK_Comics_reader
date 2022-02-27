@@ -72,9 +72,9 @@ export class App extends Component {
       return (
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name="Landing" component={Landing} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Landing" component={Landing} options={{headerShown: false}} />
+            <Stack.Screen name="Login" component={Login} options={{headerShown: false}} />
+            <Stack.Screen name="Register" component={Register} options={{headerShown: false}} />
           </Stack.Navigator>
         </NavigationContainer>
       )
@@ -84,7 +84,18 @@ export class App extends Component {
       return (
         <NavigationContainer>
           <Tab.Navigator screenOptions={{ headerShown: false }}>
-            <Tab.Screen name="Home" children={createHomeStack} />
+            <Tab.Screen 
+              name="Home" 
+              children={createHomeStack} 
+              // options={{
+              //   tabBarIcon: ({ color }) => (
+              //     <MaterialComunityIcons name="fridge-outline" color={color} size={24} style={{
+              //       paddingBottom: 0,
+              //       marginBottom: 0,
+              //     }} />
+              //   )
+              // }}
+            />
             <Tab.Screen name="Profile" component={Profile} />
           </Tab.Navigator>
         </NavigationContainer>
