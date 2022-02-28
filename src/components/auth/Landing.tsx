@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Button, StyleSheet } from 'react-native'
+import { View, Text, Button, StyleSheet, Image } from 'react-native'
 
 export default function Landing({ navigation }) {
     return (
@@ -9,6 +9,7 @@ export default function Landing({ navigation }) {
                     Welcome
                 </Text>
             </View>
+            <Image style={style.image} source={require('../../assets/1.png')} />  
             <View>
                 <View style={style.login}>
                     <Button
@@ -35,6 +36,11 @@ const style = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-between',
     },
+    image: {
+        alignSelf: "center",
+        width: 250,
+        height: 250,
+    },
     login: {
         margin: 5,
         backgroundColor: "#FF4500",
@@ -50,6 +56,7 @@ const style = StyleSheet.create({
     welcomeTextInside: {
         fontSize: 20,
         fontWeight: "bold",
+        color: "white"
     },
     welcomeText: {
         height: 50,
