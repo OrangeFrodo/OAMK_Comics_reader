@@ -1,1 +1,1 @@
-# Void
+# Comics reader application
